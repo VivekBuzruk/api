@@ -1,5 +1,8 @@
 package com.capitalone.dashboard.request;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -26,6 +29,9 @@ public class DashboardRequest {
     private DashboardRequestTitle dashboardRequestTitle;
 
     private String applicationName;
+
+    //Component Count
+    private String compCount = "0";
 
     private String componentName;
 
@@ -84,6 +90,14 @@ public class DashboardRequest {
         this.componentName = componentName;
     }
 
+    public String getCompCount() {
+        return compCount;
+    }
+
+    public void setCompCount(String compCount) {
+        this.compCount = compCount;
+    }
+
     public String getType() { return type; }
 
     public void setType(String type) { this.type = type; }
@@ -130,7 +144,19 @@ public class DashboardRequest {
 
     public Dashboard toDashboard() {
         DashboardType type = DashboardType.fromString(this.type);
-        Application application = new Application(applicationName, new Component(componentName));
+        Application application = null;       
+        System.out.println("**Vivek** DashboardRequest toDashboard, compCount = " + getCompCount());
+        if (getCompCount() == null || getCompCount().trim().equals("") || Integer.parseInt(getCompCount()) <= 1) {
+            application = new Application(applicationName, new Component(componentName));
+        } else {
+            List<Component> compList = new ArrayList<Component>();
+            for (int i = 0; i < Integer.parseInt(getCompCount() ); i++) {
+                compList.add(new Component(componentName + Integer.toString(i)));
+            }
+    
+            application = new Application(applicationName, compList.toArray(new Component[0]));
+        }
+
         Owner owner = new Owner(AuthenticationUtil.getUsernameFromContext(), AuthenticationUtil.getAuthTypeFromContext());
         List<Owner> owners = Lists.newArrayList();
         owners.add(owner);

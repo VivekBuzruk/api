@@ -82,6 +82,8 @@ public class DashboardRemoteRequest {
 
         private String businessApplication;
 
+        private String compCount;
+
         public String getTemplate() {
             return template;
         }
@@ -152,6 +154,14 @@ public class DashboardRemoteRequest {
 
         public void setType(String type) {
             this.type = type;
+        }
+
+        public String getCompCount() {
+            return compCount;
+        }
+
+        public void setCompCount(String compCount) {
+            this.compCount = compCount;
         }
     }
 

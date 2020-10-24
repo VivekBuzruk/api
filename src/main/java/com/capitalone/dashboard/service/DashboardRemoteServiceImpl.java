@@ -99,6 +99,7 @@ public class DashboardRemoteServiceImpl implements DashboardRemoteService {
         Dashboard dashboard;
         Map<String, Widget> existingWidgets = new HashMap<>();
 
+
         List<Owner> owners = getOwners(request);
         List<Owner> validOwners = Lists.newArrayList();
         for (Owner owner : owners) {
@@ -112,7 +113,7 @@ public class DashboardRemoteServiceImpl implements DashboardRemoteService {
         if (validOwners.isEmpty()) {
             throw new HygieiaException("There are no valid owner/owners in the request", HygieiaException.INVALID_CONFIGURATION);
         }
-
+        System.out.println("**Vivek** DashboardRemoteServiceImpl remoteCreate, " + validOwners.get(0).getUsername());
         List<Dashboard> dashboards = findExistingDashboardsFromRequest( request );
         if (!CollectionUtils.isEmpty(dashboards)) {
             if (dashboards.size()==1) {
@@ -312,7 +313,22 @@ public class DashboardRemoteServiceImpl implements DashboardRemoteService {
      */
     private Dashboard requestToDashboard(DashboardRemoteRequest request) throws HygieiaException {
         DashboardRemoteRequest.DashboardMetaData metaData = request.getMetaData();
-        Application application = new Application(metaData.getApplicationName(), new Component(metaData.getComponentName()));
+
+        Application application = null;       
+        System.out.println("**Vivek** DashboardRequest toDashboard, compCount = " + metaData.getCompCount());
+        if (metaData.getCompCount() == null || metaData.getCompCount().trim().equals("") || 
+                  Integer.parseInt(metaData.getCompCount()) <= 1) {
+            application = new Application(metaData.getApplicationName(), new Component(metaData.getComponentName()));
+        } else {
+            List<Component> compList = new ArrayList<Component>();
+            for (int i = 0; i < Integer.parseInt(metaData.getCompCount() ); i++) {
+                compList.add(new Component(metaData.getComponentName() + Integer.toString(i)));
+            }
+    
+            application = new Application(metaData.getApplicationName(), compList.toArray(new Component[0]));
+        }
+
+        // Application application = new Application(metaData.getApplicationName(), new Component(metaData.getComponentName()));
         String appName = null;
         String serviceName = null;
         if (!StringUtils.isEmpty(metaData.getBusinessApplication())) {

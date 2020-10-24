@@ -66,6 +66,7 @@ public class DashboardController {
     @RequestMapping(value = "/dashboard", method = POST,
             consumes = APPLICATION_JSON_VALUE, produces = APPLICATION_JSON_VALUE)
     public ResponseEntity<Dashboard> createDashboard(@Valid @RequestBody DashboardRequest request) {
+        System.out.println("**Vivek** DashboardController createDashboard");
         try {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
